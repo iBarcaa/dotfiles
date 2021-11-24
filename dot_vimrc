@@ -1,0 +1,235 @@
+"--------------------------------------------------
+" Plugins
+"--------------------------------------------------
+call plug#begin('~/.vim/plugged')
+
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'yggdroot/leaderf', { 'do': ':LeaderfInstallCExtension' }
+
+Plug 'yggdroot/indentline'
+Plug 'preservim/nerdtree'
+Plug 'preservim/nerdcommenter'
+Plug 'luochen1990/rainbow'
+Plug 'mhinz/vim-signify'
+Plug 'mhinz/vim-startify'
+Plug 'itchyny/lightline.vim'
+Plug 'octol/vim-cpp-enhanced-highlight'
+
+" colorscheme
+Plug 'sickill/vim-monokai'
+Plug 'phanviet/vim-monokai-pro'
+" Plug 'chriskempson/base16-vim'
+" Plug 'tomasr/molokai'
+" Plug 'morhetz/gruvbox'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+
+call plug#end()
+
+" not vi compatible
+set nocompatible
+
+" Turn on syntax highlighting.
+syntax on
+
+set t_Co=256
+set termguicolors
+set scrolloff=15
+set background=dark
+
+colorscheme monokai_pro
+
+"--------------------------------------------------
+" Basic editing config
+"--------------------------------------------------
+
+set shortmess+=atI  " disable startup message
+set nu              " show number lines
+set rnu             " show relativenumber
+set cursorline
+set noshowmode
+set showmatch
+set autoread
+set laststatus=2
+
+" The backspace key has slightly unintuitive behavior by default. For example,
+" by default, you can't backspace before the insertion point set with 'i'.
+" This configuration makes backspace behave more reasonably, in that you can
+" backspace over anything.
+set backspace=indent,eol,start
+
+" By default, Vim doesn't let you hide a buffer (i.e. have a buffer that isn't
+" shown in any window) that has unsaved changes. This is to prevent you from "
+" forgetting about unsaved changes and then quitting e.g. via `:qa!`. We find
+" hidden buffers helpful enough to disable this protection. See `:help hidden`
+" for more information on this.
+set hidden
+
+set incsearch                   " do incremental searching, search as you type "
+set hlsearch                    " highlight searches "
+set ignorecase                  " ignore case when searching "
+set smartcase                   " no ignorecase if Uppercase char present "
+
+" Unbind some useless/annoying default key bindings.
+nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
+
+" Disable audible bell because it's annoying.
+set noerrorbells visualbell t_vb=
+
+" Enable mouse support. You should avoid relying on this too much, but it can
+" sometimes be convenient.
+set mouse+=a
+
+" Try to prevent bad habits like using the arrow keys for movement. This is
+" not the only possible bad habit. For example, holding down the h/j/k/l keys
+" for movement, rather than using more efficient movement commands, is also a
+" bad habit. The former is enforceable through a .vimrc, while we don't know
+" how to prevent the latter.
+" Do this in normal mode...
+nnoremap <Left>  :echoe "Use h"<CR>
+nnoremap <Right> :echoe "Use l"<CR>
+nnoremap <Up>    :echoe "Use k"<CR>
+nnoremap <Down>  :echoe "Use j"<CR>
+" ...and in insert mode
+inoremap <Left>  <ESC>:echoe "Use h"<CR>
+inoremap <Right> <ESC>:echoe "Use l"<CR>
+inoremap <Up>    <ESC>:echoe "Use k"<CR>
+inoremap <Down>  <ESC>:echoe "Use j"<CR>
+
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+" Use <Tab> and <S-Tab> to navigate the completion list
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+nnoremap ; :
+" Leader
+let mapleader=" "         " leader is space
+inoremap <C-[> <ESC>
+set altkeymap
+
+
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+let g:indentLine_color_term = 239
+let g:indentLine_color_gui = '#A4E57E'
+let g:indentLine_color_tty_light = 7 " (default: 4)
+let g:indentLine_color_dark = 1 " (default: 2)
+let g:indentLine_bgcolor_term = 202
+let g:indentLine_bgcolor_gui = '#FF5F00'
+let g:indentLine_char = '|'
+let g:indentLine_enabled = 1
+
+let g:rainbow_active = 1
+let g:rainbow_conf = {
+\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+\	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+\	'operators': '_,_',
+\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+\	'separately': {
+\		'*': {},
+\		'tex': {
+\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+\		},
+\		'lisp': {
+\			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+\		},
+\		'vim': {
+\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+\		},
+\		'html': {
+\			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+\		},
+\		'css': 0,
+\	}
+\}
+"--------------------------------------------------
+" vim-gutentags
+"--------------------------------------------------
+
+" gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+
+" 所生成的数据文件的名称
+let g:gutentags_ctags_tagfile = '.tags'
+
+" 同时开启 ctags 和 gtags 支持：
+let g:gutentags_modules = []
+if executable('ctags')
+	let g:gutentags_modules += ['ctags']
+endif
+if executable('gtags-cscope') && executable('gtags')
+	let g:gutentags_modules += ['gtags_cscope']
+endif
+
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+
+" 检测 ~/.cache/tags 不存在就新建
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+
+" 配置 ctags 的参数
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+" 如果使用 universal ctags 需要增加下面一行，老的 Exuberant-ctags 不能加下一行
+let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
+
+" 禁用 gutentags 自动加载 gtags 数据库的行为
+let g:gutentags_auto_add_gtags_cscope = 0
+
+" 打开第一个文件时自动生成 gtags 数据库
+let g:Lf_GtagsAutoGenerate = 1
+
+let g:Lf_ShortcutF = '<C-P>'
+let g:Lf_ShortcutB = '<A-N>'
+noremap <c-n> :LeaderfMru<cr>
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+
+let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+let g:Lf_WindowHeight = 0.30
+let g:Lf_CacheDirectory = expand('~/.vim/cache')
+let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 1
+let g:Lf_StlColorscheme = 'powerline'
+let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
+
+noremap <F2> :LeaderfFunction!<cr>
+noremap <F3> :LeaderfTag<cr>
+noremap <F4> :LeaderfBuffer<cr>
+
+noremap <leader>f :LeaderfSelf<cr>
+noremap <leader>fm :LeaderfMru<cr>
+noremap <leader>ff :LeaderfFunction<cr>
+noremap <leader>fb :LeaderfBufTagAll<cr>
+noremap <leader>ft :LeaderfBufTag<cr>
+noremap <leader>fl :LeaderfLine<cr>
+noremap <leader>fw :LeaderfWindow<cr>
+
+noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 1
+let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu Sans Mono for Powerline" }
+
+noremap <C-S> :w<CR>
+inoremap <C-S> <ESC>:w<CR>
